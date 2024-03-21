@@ -5,6 +5,7 @@ module.exports = function (app) {
     createProxyMiddleware('/', {
       target: process.env.NEXT_PUBLIC_API_URL,
       changeOrigin: true,
+      secure: false
     }),
   );
 };
