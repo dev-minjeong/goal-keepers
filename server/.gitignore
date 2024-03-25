@@ -1,57 +1,45 @@
-# HELP.md
-# .gradle
-# build/
-# !gradle/wrapper/gradle-wrapper.jar
-# !**/src/main/**/build/
-# !**/src/test/**/build/
-
-# ### STS ###
-# .apt_generated
-# .classpath
-# .factorypath
-# .project
-# .settings
-# .springBeans
-# .sts4-cache
-# bin/
-# !**/src/main/**/bin/
-# !**/src/test/**/bin/
-
-# ### IntelliJ IDEA ###
-# .idea
-# *.iws
-# *.iml
-# *.ipr
-# out/
-# !**/src/main/**/out/
-# !**/src/test/**/out/
-
-# ### NetBeans ###
-# /nbproject/private/
-# /nbbuild/
-# /dist/
-# /nbdist/
-# /.nb-gradle/
-
-# ### VS Code ###
-# .vscode/
-
-.gradle/
-.vscode/
-build/
-gradle/
-gradlew
-bradlew.bat
 HELP.md
-settings.gradle
-application.properties
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
 Dockerfile
-flyway.user.toml
-report.html
-report.json
-#*.sql
 *.json
-*.properties
+application-dev.properties
+application-test.properties
 *.yaml
 *.yml
 V1.1__post_content_update.sql
