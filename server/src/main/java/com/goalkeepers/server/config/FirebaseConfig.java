@@ -1,6 +1,7 @@
 package com.goalkeepers.server.config;
 
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -17,8 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class FirebaseConfig {
     
-    @Value("${app.firebase-configuration-file}")
-    private String firebaseConfigPath;
+    @Value("${app.firebase-configuration-json}")
+    private String firebaseCredentialsJson;
 
     @Value("${app.firebase-bucket}")
     private String firebaseBucket;
@@ -27,7 +28,7 @@ public class FirebaseConfig {
     public void init() {
         try {
             log.info("----------Firebase start----------");
-            InputStream serviceAccount = FirebaseConfig.class.getResourceAsStream(firebaseConfigPath);
+            InputStream serviceAccount = new ByteArrayInputStream(firebaseCredentialsJson.getBytes());
             FirebaseOptions options = FirebaseOptions.builder()
                                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                                         .setStorageBucket(firebaseBucket)
