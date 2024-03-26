@@ -1,15 +1,15 @@
 package com.goalkeepers.server.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
 public class PublicController {
     
-    @RequestMapping("/")
-    public String main() {
-        return "index";
-    }
+    // @GetMapping("/")
+    // public String main() {
+    //     return "index";
+    // }
     
 }
