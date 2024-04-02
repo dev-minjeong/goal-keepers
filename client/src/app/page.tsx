@@ -60,6 +60,7 @@ export default function Home() {
   const handleTab = (boolean: boolean) => {
     setIsMyGoals(boolean);
   };
+  
 
   return (
     <div
