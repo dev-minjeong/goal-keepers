@@ -81,3 +81,6 @@ body {
 .alarm-menu::-webkit-scrollbar {
   display: none;
 }
+.ptr__pull-down--pull-more {
+  color: white;
+}
