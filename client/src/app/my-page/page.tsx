@@ -125,7 +125,7 @@ const MyPage = () => {
       >
         <h2 className="text-xl">고객센터</h2>
       </section>
-      <section className="border w-full rounded-md h-[40%] py-4 px-8 flex flex-col">
+      <section className="border w-full rounded-md h-[50%] py-4 px-8 flex flex-col">
         <h2 className="text-xl mb-3">알림 설정</h2>
         <ul className="h-3/4 w-full">
           {Object.values(adData).map((list, index) => {

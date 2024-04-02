@@ -43,7 +43,9 @@ const ShareButton: React.FC<{
     }
   };
   const onDeleteShareGoal = async () => {
-    const confirm = window.confirm('해당 목표의 담기를 취소하시겠습니까?');
+    const confirm = window.confirm(
+      '취소 시 담기 했던 목표와 함께 모든 내용이 삭제됩니다. 정말로 취소하시겠습니까?',
+    );
 
     if (confirm) {
       const response = await handleFindConnectedGoal(goalId);
