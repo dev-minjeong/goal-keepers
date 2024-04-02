@@ -53,8 +53,12 @@ const CommunityBox: React.FC<{
       className={`
       ${
         data.contentList.length === 0
-          ? 'h-48'
-          : `h-${data.contentList.length + 5}0`
+          ? 'h-40'
+          : data.contentList.length === 1
+          ? `h-60`
+          : data.contentList.length === 2
+          ? `h-[290px]`
+          : `h-[355px]`
       }
       flex
       justify-between
