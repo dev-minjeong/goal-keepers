@@ -20,6 +20,8 @@ import {
   setTargetId,
   setTargetPage,
 } from '@/redux/alarmDataSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretUp, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 interface alarmContentTypes {
   notificationId: number;
@@ -43,6 +45,7 @@ const Alarm = () => {
   const [isDeleteCheck, setIsDeleteCheck] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [deleteList, setDeleteList] = useState<number[]>([]);
+  const [isFocus, setIsFocus] = useState<number | null>(null);
 
   const dispatch = useDispatch();
   const reduxAlarmData = useSelector(selectRender);
@@ -79,7 +82,53 @@ const Alarm = () => {
     const response = await handleGetAlarm(formData);
 
     if (response.success) {
-      setAlarmContent(response.data.content);
+      // setAlarmContent(response.data.content);
+      setAlarmContent([
+        {
+          notificationId: 67,
+          receiverId: 1,
+          giverId: null,
+          giverNickname: null,
+          type: 'TODAY',
+          targetId: null,
+          targetTitle: null,
+          message: '어제 완료된 목표는 2개 입니다.',
+          commentId: null,
+        },
+        {
+          notificationId: 66,
+          receiverId: 1,
+          giverId: 2,
+          giverNickname: '테스트2',
+          type: 'COMMENT',
+          targetId: 5,
+          targetTitle: '골 제목1',
+          message: null,
+          commentId: 56,
+        },
+        {
+          notificationId: 65,
+          receiverId: 1,
+          giverId: 2,
+          giverNickname: '테스트2',
+          type: 'COMMENT',
+          targetId: 5,
+          targetTitle: '골 제목1',
+          message: null,
+          commentId: 55,
+        },
+        {
+          notificationId: 65,
+          receiverId: 1,
+          giverId: 2,
+          giverNickname: '테스트2',
+          type: 'NOTIFY',
+          targetId: 5,
+          targetTitle: '골 제목1',
+          message: 'sdfsdf',
+          commentId: 55,
+        },
+      ]);
       setPageable({
         pageNumber: response.data.pageable.pageNumber + 1,
         last: response.data.last,
@@ -276,55 +325,90 @@ const Alarm = () => {
           <ul className=" flex flex-col gap-4 ">
             {focusMenu === 0 ? (
               alarmContent.map((data, index) => {
-                const menuType = menu.find((item) => item.type === data.type);
-                const menuColorType = profileColors.find(
-                  (item) => item.type === data.type,
-                );
+                let menuType;
+                let menuColorType;
+                if (
+                  data.type === 'TODAY' ||
+                  data.type === 'DAYLEFT' ||
+                  data.type === 'WEEKLEFT'
+                ) {
+                  menuType = menu.find((item) => item.type === 'ALARM');
+                  menuColorType = profileColors.find(
+                    (item) => item.type === 'ALARM',
+                  );
+                } else {
+                  menuType = menu.find((item) => item.type === data.type);
+                  menuColorType = profileColors.find(
+                    (item) => item.type === data.type,
+                  );
+                }
+
                 return (
                   <li key={index} className="w-full flex">
                     {isEdit && (
                       <CheckBox notificationId={data.notificationId}></CheckBox>
                     )}
-
-                    <div
-                      className="h-20 w-full bg-neutral-100 rounded-xl flex items-center px-[5%] py-[3%] gap-2 justify-between"
-                      onClick={() => {
-                        if (data.type === 'COMMENT') {
-                          onGetAlarmTarget(data.targetId, data.commentId);
-                        }
-                      }}
-                    >
-                      <div className="w-[18%]">
-                        <div
-                          className={`h-[78%] aspect-square	mr-[4%] flex items-center justify-center rounded-full 
+                    <div className="flex flex-col w-full">
+                      <div
+                        className="h-20 w-full bg-neutral-100 rounded-xl flex items-center px-[5%] py-[3%] gap-2 justify-between"
+                        onClick={() => {
+                          if (data.type === 'COMMENT') {
+                            onGetAlarmTarget(data.targetId, data.commentId);
+                          } else if (data.type === 'NOTIFY') {
+                            isFocus === index
+                              ? setIsFocus(null)
+                              : setIsFocus(index);
+                          }
+                        }}
+                      >
+                        <div className="w-12">
+                          <div
+                            className={`h-[78%] aspect-square	mr-[4%] flex items-center justify-center rounded-full 
                           ${menuColorType?.color}
                           	`}
-                        >
-                          <h2 className="text-white text-base font-semibold	">
-                            {menuType?.name}
-                          </h2>
+                          >
+                            <h2 className="text-white text-base font-semibold	">
+                              {menuType?.name}
+                            </h2>
+                          </div>
+                        </div>
+
+                        <div className="flex-1 h-full flex flex-col">
+                          {data.giverNickname !== null ? (
+                            <div className="w-full flex justify-end">
+                              <div className=" px-1 py-[1px] bg-orange-200">
+                                <p className="text-[11px] text-gray-600 font-medium	">
+                                  "{data.giverNickname}" 님
+                                </p>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="h-4 mb-[3px]"></div>
+                          )}
+                          <h3 className="text-base font-extrabold truncate w-full ">
+                            {data.targetTitle === null
+                              ? data.message
+                              : data.targetTitle}
+                          </h3>
+                          {data.type === 'NOTIFY' && (
+                            <div className="w-[calc(100%-54px)] flex justify-center">
+                              <button className="w-3">
+                                <FontAwesomeIcon
+                                  className="text-xs"
+                                  icon={
+                                    isFocus === index ? faCaretUp : faCaretDown
+                                  }
+                                ></FontAwesomeIcon>
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
-
-                      <div className="w-[82%] h-full flex flex-col">
-                        {data.giverNickname !== null ? (
-                          <div className="w-full flex justify-end">
-                            <div className=" px-1 py-[1px] bg-orange-200">
-                              <p className="text-[11px] text-gray-600 font-medium	">
-                                "{data.giverNickname}" 님
-                              </p>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="h-4 mb-[3px]"></div>
-                        )}
-
-                        <h3 className="text-base font-extrabold truncate w-full ">
-                          {data.targetTitle === null
-                            ? data.message
-                            : data.targetTitle}
-                        </h3>
-                      </div>
+                      {isFocus === index && (
+                        <div className="p-3 text-sm text-neutral-500">
+                          <p>{data.message}</p>
+                        </div>
+                      )}
                     </div>
                   </li>
                 );
@@ -332,52 +416,95 @@ const Alarm = () => {
             ) : (
               <>
                 {alarmContent.map((data, index) => {
-                  const menuType = menu.find((item) => item.type === data.type);
-                  const menuColorType = profileColors.find(
-                    (item) => item.type === data.type,
-                  );
-                  if (data.type === menu[focusMenu].type) {
+                  let menuType;
+                  let menuColorType;
+                  if (
+                    data.type === 'TODAY' ||
+                    data.type === 'DAYLEFT' ||
+                    data.type === 'WEEKLEFT'
+                  ) {
+                    menuType = menu.find((item) => item.type === 'ALARM');
+                    menuColorType = profileColors.find(
+                      (item) => item.type === 'ALARM',
+                    );
+                  } else {
+                    menuType = menu.find((item) => item.type === data.type);
+                    menuColorType = profileColors.find(
+                      (item) => item.type === data.type,
+                    );
+                  }
+                  if (menuType?.type === menu[focusMenu].type) {
                     return (
-                      <li key={index} className="w-full ">
-                        <div
-                          className="h-20 bg-neutral-100 rounded-xl flex items-center px-[5%] py-[3%] gap-2 justify-between"
-                          onClick={() => {
-                            if (data.type === 'COMMENT') {
-                              onGetAlarmTarget(data.targetId, data.commentId);
-                            }
-                          }}
-                        >
-                          <div className="w-[18%]">
-                            <div
-                              className={`h-[78%] aspect-square	mr-[4%] flex items-center justify-center rounded-full 
+                      <li key={index} className="w-full flex">
+                        {isEdit && (
+                          <CheckBox
+                            notificationId={data.notificationId}
+                          ></CheckBox>
+                        )}
+                        <div className="flex flex-col w-full">
+                          <div
+                            className="h-20 bg-neutral-100 rounded-xl flex items-center px-[5%] py-[3%] gap-2 justify-between"
+                            onClick={() => {
+                              if (data.type === 'COMMENT') {
+                                onGetAlarmTarget(data.targetId, data.commentId);
+                              } else if (data.type === 'NOTIFY') {
+                                isFocus === index
+                                  ? setIsFocus(null)
+                                  : setIsFocus(index);
+                              }
+                            }}
+                          >
+                            <div className="w-12">
+                              <div
+                                className={`h-[78%] aspect-square	mr-[4%] flex items-center justify-center rounded-full 
                           ${menuColorType?.color}
                           	`}
-                            >
-                              <h2 className="text-white text-base font-semibold	">
-                                {menuType?.name}
-                              </h2>
+                              >
+                                <h2 className="text-white text-base font-semibold	">
+                                  {menuType?.name}
+                                </h2>
+                              </div>
+                            </div>
+
+                            <div className="flex-1 h-full flex flex-col">
+                              {data.giverNickname !== null ? (
+                                <div className="w-full flex justify-end">
+                                  <div className=" px-1 py-[1px] bg-orange-200">
+                                    <p className="text-[11px] text-gray-600 font-medium	">
+                                      "{data.giverNickname}" 님
+                                    </p>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="h-4 mb-[3px]"></div>
+                              )}
+
+                              <h3 className="text-base font-extrabold truncate w-full ">
+                                {data.targetTitle === null
+                                  ? data.message
+                                  : data.targetTitle}
+                              </h3>
+                              {data.type === 'NOTIFY' && (
+                                <div className="w-[calc(100%-54px)] flex justify-center">
+                                  <button className="w-3">
+                                    <FontAwesomeIcon
+                                      className="text-xs"
+                                      icon={
+                                        isFocus === index
+                                          ? faCaretUp
+                                          : faCaretDown
+                                      }
+                                    ></FontAwesomeIcon>
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </div>
-
-                          <div className="w-[82%] h-full flex flex-col">
-                            {data.giverNickname !== null ? (
-                              <div className="w-full flex justify-end">
-                                <div className=" px-1 py-[1px] bg-orange-200">
-                                  <p className="text-[11px] text-gray-600 font-medium	">
-                                    "{data.giverNickname}" 님
-                                  </p>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="h-4 mb-[3px]"></div>
-                            )}
-
-                            <h3 className="text-base font-extrabold truncate w-full ">
-                              {data.targetTitle === null
-                                ? data.message
-                                : data.targetTitle}
-                            </h3>
-                          </div>
+                          {isFocus === index && (
+                            <div className="p-3 text-sm text-neutral-500">
+                              <p>{data.message}</p>
+                            </div>
+                          )}
                         </div>
                       </li>
                     );
