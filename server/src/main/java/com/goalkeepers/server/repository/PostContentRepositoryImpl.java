@@ -133,7 +133,8 @@ public class PostContentRepositoryImpl implements PostContentRepositoryCustom {
 
                 totalSize = queryFactory
                             .selectFrom(post)
-                            .where(post.privated.eq(false))
+                            .where(post.privated.eq(false)
+                                .and(post.contentList.isNotEmpty()))
                             .fetch()
                             .size();
         }
@@ -179,7 +180,8 @@ public class PostContentRepositoryImpl implements PostContentRepositoryCustom {
 
         int totalSize = queryFactory
                         .selectFrom(post)
-                        .where(post.goal.member.eq(member))
+                        .where(post.goal.member.eq(member)
+                            .and(post.contentList.isNotEmpty()))
                         .fetch()
                         .size();
         
@@ -231,6 +233,8 @@ public class PostContentRepositoryImpl implements PostContentRepositoryCustom {
                             .groupBy(post.id, post.goal.id)
                             .orderBy(isNewSort ? postContent.createdAt.max().desc() : post.cheerCnt.desc(),
                                     post.id.desc())
+                            .offset(pageable.getOffset())
+                            .limit(pageable.getPageSize())
                             .fetch();
 
         List<PostResponseDto> page = tuples
@@ -274,8 +278,14 @@ public class PostContentRepositoryImpl implements PostContentRepositoryCustom {
             }).collect(Collectors.toList());
 
         int totalSize = queryFactory
-                        .selectFrom(postContent)
-                        .where(postContent.post.eq(post))
+                        .select(post.id, post.goal.id, postContent.id.max())
+                        .from(post)
+                        .rightJoin(postContent).on(post.id.eq(postContent.post.id))
+                        .where(post.privated.isFalse()
+                            .and(postContent.content.contains(query)
+                            .or(post.goal.title.contains(query))
+                            .or(post.goal.description.contains(query))))
+                        .groupBy(post.id, post.goal.id)
                         .fetch()
                         .size();
         
