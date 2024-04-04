@@ -333,7 +333,7 @@ const Alarm = () => {
                         </div>
 
                         <div className="flex-1 h-full flex flex-col">
-                          {data.giverNickname !== null ? (
+                          {/* {data.giverNickname !== null ? (
                             <div className="w-full flex justify-end">
                               <div className=" px-1 py-[1px] bg-orange-200">
                                 <p className="text-[11px] text-gray-600 font-medium	">
@@ -343,7 +343,7 @@ const Alarm = () => {
                             </div>
                           ) : (
                             <div className="h-4 mb-[3px]"></div>
-                          )}
+                          )} */}
                           <h3 className="text-base font-extrabold truncate w-full ">
                             {data.targetTitle === null
                               ? data.message
@@ -430,7 +430,7 @@ const Alarm = () => {
                             </div>
 
                             <div className="flex-1 h-full flex flex-col">
-                              {data.giverNickname !== null ? (
+                              {/* {data.giverNickname !== null ? (
                                 <div className="w-full flex justify-end">
                                   <div className=" px-1 py-[1px] bg-orange-200">
                                     <p className="text-[11px] text-gray-600 font-medium	">
@@ -440,7 +440,7 @@ const Alarm = () => {
                                 </div>
                               ) : (
                                 <div className="h-4 mb-[3px]"></div>
-                              )}
+                              )} */}
 
                               <h3 className="text-base font-extrabold truncate w-full ">
                                 {data.targetTitle === null
