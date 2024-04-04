@@ -136,15 +136,15 @@ const Alarm = () => {
     }
   };
 
-  const onReadAlarm = async () => {
-    const confirm = window.confirm('알림을 모두 읽으시겠습니까?');
-    if (confirm) {
-      const response = await handleReadAlarm();
-      if (response.success) {
-        window.alert(response.message);
-      }
-    }
-  };
+  // const onReadAlarm = async () => {
+  //   const confirm = window.confirm('알림을 모두 읽으시겠습니까?');
+  //   if (confirm) {
+  //     const response = await handleReadAlarm();
+  //     if (response.success) {
+  //       window.alert(response.message);
+  //     }
+  //   }
+  // };
 
   const onDeleteAlarm = async () => {
     if (deleteList.length === 0) {
