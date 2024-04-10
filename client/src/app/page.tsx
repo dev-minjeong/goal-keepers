@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useSelector } from 'react-redux';
 import { selectRender } from '@/redux/renderSlice';
+import { handleGetAGoal } from './actions';
 
 export default function Home() {
   const [isMyGoals, setIsMyGoals] = useState(true);
@@ -46,7 +47,8 @@ export default function Home() {
     selectGoalNum !== null ? setOpen(true) : setOpen(false);
     if (selectGoalNum !== null) {
       setOpen(true);
-      setSelectData(myGoalList[selectGoalNum]);
+      // setSelectData(myGoalList[selectGoalNum]);
+      onSelectedData(selectGoalNum);
     } else {
       setOpen(false);
       setSelectData(null);
@@ -60,7 +62,16 @@ export default function Home() {
   const handleTab = (boolean: boolean) => {
     setIsMyGoals(boolean);
   };
-  
+
+  const onSelectedData = async (id: number) => {
+    const formData = {
+      goalId: id,
+    };
+    const response = await handleGetAGoal(formData);
+    if (response.success) {
+      setSelectData(response.data);
+    }
+  };
 
   return (
     <div

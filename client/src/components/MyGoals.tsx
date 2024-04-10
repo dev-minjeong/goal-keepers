@@ -58,7 +58,9 @@ const MyGoals: React.FC<{
   }, []);
   useEffect(() => {
     if (reduxGoalData.goalBoolean === true) {
-      handleFetchGoalListAll(1);
+
+      goalDoing === 'doing' ? handleFetchGoalListAll(1) : onDoneGoal();
+
       dispatch(setStateGoal(false));
     }
   }, [reduxGoalData.goalBoolean]);
@@ -71,7 +73,7 @@ const MyGoals: React.FC<{
   useEffect(() => {}, [myGoalList]);
 
   useEffect(() => {
-    onDoneGoal();
+    if (goalDoing === 'done') onDoneGoal();
   }, [goalDoing]);
 
   useLayoutEffect(() => {
@@ -144,33 +146,32 @@ const MyGoals: React.FC<{
   };
 
   const onDoneGoal = () => {
-    if (goalDoing === 'done') {
-      const doneGoalList = myGoalList.filter((item) => item.completed === true);
+    const doneGoalList = myGoalList.filter((item) => item.completed === true);
 
-      const groupedByYear: { [year: string]: any[] } = doneGoalList.reduce(
-        (result, goal) => {
-          const year = new Date(goal.completeDate).getFullYear().toString();
+    const groupedByYear: { [year: string]: any[] } = doneGoalList.reduce(
+      (result, goal) => {
+        const year = new Date(goal.completeDate).getFullYear().toString();
 
-          if (!result[year]) {
-            result[year] = [];
-          }
+        if (!result[year]) {
+          result[year] = [];
+        }
 
-          result[year].push(goal);
+        result[year].push(goal);
 
-          return result;
-        },
-        {} as { [year: string]: any[] },
-      );
-      const groupedByYearArray = Object.entries(groupedByYear).map(
-        ([year, goals]) => ({
-          year,
-          goals,
-        }),
-      );
+        return result;
+      },
+      {} as { [year: string]: any[] },
+    );
+    const groupedByYearArray = Object.entries(groupedByYear).map(
+      ([year, goals]) => ({
+        year,
+        goals,
+      }),
+    );
 
-      setDoneGoalList(groupedByYearArray);
-    }
+    setDoneGoalList(groupedByYearArray);
   };
+
   return (
     <div className="w-full h-[calc(100%-40px)] border-x border-b border-orange-300">
       <div className="flex gap-4 justify-end mt-2 mr-4 h-6">
@@ -225,7 +226,7 @@ const MyGoals: React.FC<{
                     <li
                       key={index}
                       className={` w-[95px] h-[95px] bg-white relative flex items-center justify-center goal-element`}
-                      onClick={() => handleSelectGoalClick(index)}
+                      onClick={() => handleSelectGoalClick(list.goalId)}
                     >
                       <Image
                         src={list.imageUrl === null ? Image1 : list.imageUrl}
@@ -237,7 +238,9 @@ const MyGoals: React.FC<{
                         }}
                       ></Image>
                       <div className="w-full h-full bg-black opacity-50 absolute"></div>
-                      <h3 className="text-white absolute text-center">{list.title}</h3>
+                      <h3 className="text-white absolute text-center">
+                        {list.title}
+                      </h3>
                     </li>
                   );
                 }
@@ -258,7 +261,7 @@ const MyGoals: React.FC<{
                           <li
                             key={index}
                             className={`w-[95px] h-[95px] bg-white relative flex items-center justify-center goal-element `}
-                            onClick={() => handleSelectGoalClick(index)}
+                            onClick={() => handleSelectGoalClick(list.goalId)}
                           >
                             <Image
                               src={

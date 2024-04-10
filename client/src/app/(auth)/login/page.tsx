@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { handleLogin } from './actions';
 import Image from 'next/image';
 import kakaoButton from '../../../../public/kakao_login_buttons/kakao_login_medium_wide.png';
@@ -14,6 +14,8 @@ interface LoginTypes {
 
 const Login = () => {
   const router = useRouter();
+  const [email, setEmail] = useState('test2@gogo.com');
+  const [password, setPassword] = useState('passwordPassword2@');
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -50,12 +52,16 @@ const Login = () => {
           placeholder="example@example.com"
           name="email"
           className="w-full h-11 border rounded-md p-3"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         ></input>
         <input
           type="password"
           placeholder="password"
           name="password"
           className="w-full h-11 border rounded-md p-3 mb-5"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         ></input>
         <input
           className="gk-primary-login-button"

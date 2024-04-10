@@ -5,7 +5,6 @@ import Image1 from '../../public/assets/images/goalKeepers.png';
 import {
   handleChangePrivate,
   handleCreatePostContent,
-  handleDeletePost,
   handleDeletePostContent,
   handleGetAllPostContent,
   handleLikeContent,
@@ -108,21 +107,6 @@ const PostBoxDetail: React.FC<{
     }
   };
 
-  const onDeletePost = async () => {
-    const postData = {
-      postId: data.postId,
-    };
-    const confirm = window.confirm('포스트를 삭제하시겠습니까?');
-    if (confirm) {
-      await handleDeletePost(postData)
-        .then((response) => {
-          setFocusNum(null);
-          dispatch(setStatePost(data.postId));
-        })
-        .catch((error) => console.log(error));
-    }
-  };
-
   const onCreatePostContent = async (goalId: number) => {
     const formData = {
       content: contentValue,
@@ -190,15 +174,6 @@ const PostBoxDetail: React.FC<{
           }}
         ></Image>
         <div className="w-full h-full bg-black absolute opacity-50"></div>
-        {data.myPost && (
-          <div className="flex text-white absolute top-0 right-0 text-xs gap-2 m-2">
-            <FontAwesomeIcon
-              className="mt-2"
-              onClick={() => onDeletePost()}
-              icon={faTrashAlt}
-            />
-          </div>
-        )}
         <h3 className="text-center px-1  mx-4	text-white	font-bold absolute top-1/4 -translate-y-1/3 z-10 text-ellipsis	">
           {data.goalTitle.length > 18
             ? data.goalTitle.slice(0, 18) + '...'
