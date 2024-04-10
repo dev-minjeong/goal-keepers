@@ -35,7 +35,6 @@ const GoalModal: React.FC<{
   goalDoing: string;
 }> = ({ setOpen, selectData, setSelectGoalNum, goalDoing }) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [editTitle, setEditTitle] = useState(selectData?.title);
   const [editDescription, setEditDescription] = useState(
     selectData?.description,
   );
@@ -54,7 +53,7 @@ const GoalModal: React.FC<{
   };
   const handleEditGoal = async () => {
     const goalInformation = {
-      title: editTitle,
+      title: selectData?.title,
       description: editDescription,
       startDate: editStartDate,
       endDate: editEndDate,
@@ -70,17 +69,12 @@ const GoalModal: React.FC<{
       formData: formData,
       goalId: selectData?.goalId,
     };
-    await handleUpdateGoal(putData)
-      .then((response) => {
-        if (response.success) {
-          dispatch(setStateGoal(true));
-          setOpen(false);
-          setSelectGoalNum(null);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const response = await handleUpdateGoal(putData);
+    if (response.success) {
+      dispatch(setStateGoal(true));
+      setOpen(false);
+      setSelectGoalNum(null);
+    }
   };
   const handleRemoveGoal = async () => {
     const deleteData = {
@@ -152,16 +146,7 @@ const GoalModal: React.FC<{
           ></Image>
           <div className="absolute top-0 w-full h-full bg-opacity-50 bg-black flex items-center">
             <h2 className="text-white ml-8 text-base font-bold">
-              {isEdit ? (
-                <input
-                  className="bg-inherit"
-                  type="text"
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                ></input>
-              ) : (
-                selectData?.title
-              )}
+              {selectData?.title}
             </h2>
           </div>
           {goalDoing === 'doing' &&

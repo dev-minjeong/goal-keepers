@@ -143,7 +143,7 @@ const CreateGoal = () => {
 
   return (
     <>
-      <section className="h-96	w-full flex flex-col	items-center">
+      <section className="h-96	w-full flex flex-col	items-center gap-5">
         {item === 'title' ? (
           <>
             <h1 className="gk-primary-h1">목표의 이름을 설정하세요*</h1>
@@ -156,6 +156,9 @@ const CreateGoal = () => {
               value={titleValue}
               onChange={(e) => setTitleValue(e.target.value)}
             ></input>
+            <p className="text-sm text-orange-400">
+              * 한번 작성한 목표 제목은 수정이 불가능 합니다.
+            </p>
           </>
         ) : item === 'image' ? (
           <>
