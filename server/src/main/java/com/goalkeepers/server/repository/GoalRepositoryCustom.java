@@ -13,7 +13,7 @@ import com.goalkeepers.server.entity.Goal;
 import com.goalkeepers.server.entity.SORT;
 
 public interface GoalRepositoryCustom {
-    Page<GoalResponseDto> getMyAllGoal(Pageable pageable, Long memberId);
+    Page<GoalResponseDto> getMyAllGoal(Pageable pageable, Long memberId, Boolean completed);
     Page<CommunityResponseDto> getAllNewGoal(Pageable pageable);
     Page<CommunityResponseDto> getAllPopularGoal(Pageable pageable);
     Page<CommunityResponseDto> searchCommunity(Pageable pageable, String query, SORT sort);
