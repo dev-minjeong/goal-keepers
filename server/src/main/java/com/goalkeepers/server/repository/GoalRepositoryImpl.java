@@ -63,12 +63,12 @@ public class GoalRepositoryImpl implements GoalRepositoryCustom {
     }
 
     @Override
-    public Page<GoalResponseDto> getMyAllGoal(Pageable pageable, Long memberId) {
+    public Page<GoalResponseDto> getMyAllGoal(Pageable pageable, Long memberId, Boolean completed) {
         
         List<Goal> goals = queryFactory
                             .selectFrom(goal)
                             .leftJoin(goal.member, member)
-                            .where(member.id.eq(memberId))
+                            .where(member.id.eq(memberId).and(goal.completed.eq(completed)))
                             .orderBy(goal.id.desc())
                             .offset(pageable.getOffset())
                             .limit(pageable.getPageSize())

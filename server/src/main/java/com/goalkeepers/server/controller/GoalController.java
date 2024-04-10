@@ -55,6 +55,12 @@ public class GoalController {
         return ResponseEntity.ok(new CommonResponseDto(true, response));
     }
 
+    @GetMapping("/all/me/completed")
+    public ResponseEntity<CommonResponseDto> getCompletedGoalLists(@RequestParam(name = "page") int pageNumber) {
+        Page<GoalResponseDto> response = goalService.getMyCompletedGoalList(pageNumber);
+        return ResponseEntity.ok(new CommonResponseDto(true, response));
+    }
+
     @GetMapping("")
     public ResponseEntity<CommonResponseDto> getOneGoal(@RequestParam(name = "id", required = true) Long goalId) {
         GoalResponseDto response = goalService.getSelectedGoal(goalId);
