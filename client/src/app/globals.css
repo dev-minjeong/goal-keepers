@@ -29,8 +29,8 @@ html {
 }
 body {
   width: 100vw;
-  max-width: 400px;
-  max-height: 800px;
+  max-width: 360px;
+  max-height: 740px;
   background-color: #fff;
   /* color: rgb(var(--foreground-rgb));
   background: linear-gradient(

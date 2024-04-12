@@ -22,7 +22,7 @@ const JoinMembersBox: React.FC<{
     const newList = joinMemberList.filter((data) => !data.isOwner && data);
     const ownerData = joinMemberList.filter((data) => data.isOwner && data);
 
-    newList.unshift(ownerData[0]);
+    ownerData.length > 0 && newList.unshift(ownerData[0]);
 
     setNewJoinMember(newList);
   };
