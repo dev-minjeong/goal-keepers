@@ -12,7 +12,10 @@ import React, {
 import Image1 from '../../public/assets/images/goalKeepers.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectRender } from '@/redux/renderSlice';
-import { handleGetGoalListAll } from '@/app/actions';
+import {
+  handleGetDoingGoalListAll,
+  handleGetDoneGoalListAll,
+} from '@/app/actions';
 import { setStateGoal } from '@/redux/renderSlice';
 
 interface myGoalListTypes {
@@ -54,11 +57,13 @@ const MyGoals: React.FC<{
   const reduxGoalData = useSelector(selectRender);
 
   useEffect(() => {
-    handleFetchGoalListAll(pageable.pageNumber);
-  }, []);
+    handleFetchGoalListAll(1);
+  }, [goalDoing]);
+
   useEffect(() => {
     if (reduxGoalData.goalBoolean === true) {
       handleFetchGoalListAll(1);
+
       dispatch(setStateGoal(false));
     }
   }, [reduxGoalData.goalBoolean]);
@@ -71,8 +76,8 @@ const MyGoals: React.FC<{
   useEffect(() => {}, [myGoalList]);
 
   useEffect(() => {
-    onDoneGoal();
-  }, [goalDoing]);
+    if (goalDoing === 'done') onDoneGoal();
+  }, [myGoalList]);
 
   useLayoutEffect(() => {
     if (containerRef.current) {
@@ -93,7 +98,7 @@ const MyGoals: React.FC<{
         const parentElementBottom =
           lastElement.parentElement.getBoundingClientRect().bottom;
 
-        if (lastElementBottom - parentElementBottom < -20) {
+        if (lastElementBottom - parentElementBottom < 2) {
           setMore(true);
         }
       }
@@ -103,27 +108,51 @@ const MyGoals: React.FC<{
   const handleFetchGoalListAll = async (pageParam: number) => {
     const form = { pageNum: pageParam };
     try {
-      const response = await handleGetGoalListAll(form);
+      if (goalDoing === 'doing') {
+        const response = await handleGetDoingGoalListAll(form);
 
-      if (response.data) {
-        if (more) {
-          setMyGoalList((prevPostData: any) => [
-            ...prevPostData,
-            ...response.data.content,
-          ]);
-          setPageable({
-            pageNumber: response.data.pageable.pageNumber + 1,
-            last: response.data.last,
-          });
-        } else {
-          setMyGoalList(response.data.content);
-          setPageable({
-            pageNumber: response.data.pageable.pageNumber + 1,
-            last: response.data.last,
-          });
+        if (response.data) {
+          if (more) {
+            setMyGoalList((prevPostData: any) => [
+              ...prevPostData,
+              ...response.data.content,
+            ]);
+            setPageable({
+              pageNumber: response.data.pageable.pageNumber + 1,
+              last: response.data.last,
+            });
+          } else {
+            setMyGoalList(response.data.content);
+            setPageable({
+              pageNumber: response.data.pageable.pageNumber + 1,
+              last: response.data.last,
+            });
+          }
+          setMore(false);
         }
+      } else {
+        const response = await handleGetDoneGoalListAll(form);
 
-        setMore(false);
+        if (response.data) {
+          if (more) {
+            setMyGoalList((prevPostData: any) => [
+              ...prevPostData,
+              ...response.data.content,
+            ]);
+            setPageable({
+              pageNumber: response.data.pageable.pageNumber + 1,
+              last: response.data.last,
+            });
+          } else {
+            setMyGoalList(response.data.content);
+            setPageable({
+              pageNumber: response.data.pageable.pageNumber + 1,
+              last: response.data.last,
+            });
+          }
+
+          setMore(false);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -144,33 +173,33 @@ const MyGoals: React.FC<{
   };
 
   const onDoneGoal = () => {
-    if (goalDoing === 'done') {
-      const doneGoalList = myGoalList.filter((item) => item.completed === true);
+    const groupedByYear: { [year: string]: any[] } = myGoalList.reduce(
+      (result, goal) => {
+        const year = new Date(goal.completeDate).getFullYear().toString();
 
-      const groupedByYear: { [year: string]: any[] } = doneGoalList.reduce(
-        (result, goal) => {
-          const year = new Date(goal.completeDate).getFullYear().toString();
+        if (!result[year]) {
+          result[year] = [];
+        }
 
-          if (!result[year]) {
-            result[year] = [];
-          }
+        result[year].push(goal);
 
-          result[year].push(goal);
+        return result;
+      },
+      {} as { [year: string]: any[] },
+    );
 
-          return result;
-        },
-        {} as { [year: string]: any[] },
-      );
-      const groupedByYearArray = Object.entries(groupedByYear).map(
-        ([year, goals]) => ({
-          year,
-          goals,
-        }),
-      );
+    const groupedByYearArray = Object.entries(groupedByYear).map(
+      ([year, goals]) => ({
+        year,
+        goals,
+      }),
+    );
 
-      setDoneGoalList(groupedByYearArray);
-    }
+    groupedByYearArray.sort((a: any, b: any) => b.year - a.year);
+
+    setDoneGoalList(groupedByYearArray);
   };
+
   return (
     <div className="w-full h-[calc(100%-40px)] border-x border-b border-orange-300">
       <div className="flex gap-4 justify-end mt-2 mr-4 h-6">
@@ -209,14 +238,16 @@ const MyGoals: React.FC<{
           </label>
         </div>
       </div>
-      <div className="w-full h-[calc(100%-24px)] overflow-y-scroll">
+      <div
+        className="w-full h-[calc(100%-24px)] overflow-y-scroll"
+        ref={containerRef}
+      >
         <ul
           className={`w-full  px-3  ${
             goalDoing === 'doing'
               ? 'flex flex-row flex-wrap gap-2 py-5'
               : 'pb-5'
           }`}
-          ref={containerRef}
         >
           {goalDoing === 'doing'
             ? myGoalList.map((list, index) => {
@@ -225,7 +256,7 @@ const MyGoals: React.FC<{
                     <li
                       key={index}
                       className={` w-[95px] h-[95px] bg-white relative flex items-center justify-center goal-element`}
-                      onClick={() => handleSelectGoalClick(index)}
+                      onClick={() => handleSelectGoalClick(list.goalId)}
                     >
                       <Image
                         src={list.imageUrl === null ? Image1 : list.imageUrl}
@@ -237,7 +268,9 @@ const MyGoals: React.FC<{
                         }}
                       ></Image>
                       <div className="w-full h-full bg-black opacity-50 absolute"></div>
-                      <h3 className="text-white absolute text-center">{list.title}</h3>
+                      <h3 className="text-white absolute text-center">
+                        {list.title}
+                      </h3>
                     </li>
                   );
                 }
@@ -258,7 +291,7 @@ const MyGoals: React.FC<{
                           <li
                             key={index}
                             className={`w-[95px] h-[95px] bg-white relative flex items-center justify-center goal-element `}
-                            onClick={() => handleSelectGoalClick(index)}
+                            onClick={() => handleSelectGoalClick(list.goalId)}
                           >
                             <Image
                               src={

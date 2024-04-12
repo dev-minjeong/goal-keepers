@@ -60,28 +60,6 @@ export const handlePutPost = async (postData: {
   }
 };
 
-export const handleDeletePost = async (postData: { postId: number }) => {
-  const token = handleGetToken().token;
-  try {
-    const id = postData.postId;
-    const response = await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/board/post?post-id=${id}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      },
-    );
-    return response.data;
-  } catch (error) {
-    console.log('error', error);
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-      status: 500,
-    });
-  }
-};
 
 export const handleCheerPost = async (postId: number) => {
   const token = handleGetToken().token;
