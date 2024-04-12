@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Image1 from '../../../../../public/assets/images/goalKeepers.png';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { handleGetGoalListAll } from '@/app/actions';
+import { handleGetDoingGoalListAll } from '@/app/actions';
 import { handleCreateContent } from '../actions';
 
 const WritePost = () => {
@@ -26,7 +26,7 @@ const WritePost = () => {
 
   const onFetchGoalListAll = async () => {
     const form = { pageNum: pageNum };
-    await handleGetGoalListAll(form)
+    await handleGetDoingGoalListAll(form)
       .then((response) => {
         const foundGoalData = response.data.content.find(
           (item: any) => item.goalId === goalId,

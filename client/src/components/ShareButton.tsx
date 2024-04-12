@@ -75,7 +75,16 @@ const ShareButton: React.FC<{
             }}
             className={`${isShare ? 'text-orange-400' : 'text-gray-300'} w-4`}
           />
-          {isPostPage && <label className={`text-xs`}>{goalshareCnt}</label>}
+          {isPostPage && (
+            <label
+              className={`text-xs font-semibold ${
+                isShare ? 'text-orange-400' : 'text-gray-500'
+              }
+              `}
+            >
+              {goalshareCnt}
+            </label>
+          )}
         </li>
       }
     </>
