@@ -142,10 +142,10 @@ function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
       <html lang="en">
-        <body className={`${inter.className} wrap h-full`}>
+        <body className={`${inter.className} wrap h-full `}>
           <PullToRefresh onRefresh={handleRefresh}>
             <>
-              <main className="h-[calc(100%-56px)] w-screen flex flex-col	items-center justify-center">
+              <main className="h-[calc(100%-56px)] w-full flex flex-col	items-center justify-center">
                 {pathname === '/' && (
                   <header className="w-full flex flex-col items-end mr-5 mb-6">
                     <Link href={'/alarm'}>

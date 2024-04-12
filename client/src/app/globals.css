@@ -22,9 +22,16 @@
 }
 html {
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(248, 220, 186, 0.377);
 }
 body {
   width: 100vw;
+  max-width: 400px;
+  max-height: 800px;
+  background-color: #fff;
   /* color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
