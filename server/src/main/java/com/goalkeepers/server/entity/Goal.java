@@ -74,7 +74,7 @@ public class Goal {
     @JoinColumn(name = "share_id", nullable = true)
     private GoalShare share;
 
-    @OneToOne(mappedBy = "goal", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "goal", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Post post;
 
 

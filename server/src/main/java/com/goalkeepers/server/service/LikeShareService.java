@@ -144,7 +144,7 @@ public class LikeShareService extends ServiceHelper {
             Goal newGoal = goalRepository.save(new Goal(
                                 share,
                                 goal.getTitle(),
-                                goal.getDescription(),
+                                null,
                                 copyImageName,
                                 startDate,
                                 startDate.plusYears(1),
