@@ -6,7 +6,6 @@ import {
   handleDeleteAlarm,
   handleGetAlarm,
   handlePostCommentAlarm,
-  handleReadAlarm,
 } from './actions';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -90,16 +89,6 @@ const Alarm = () => {
     }
   };
 
-  // const onReadAlarm = async () => {
-  //   const confirm = window.confirm('알림을 모두 읽으시겠습니까?');
-  //   if (confirm) {
-  //     const response = await handleReadAlarm();
-  //     if (response.success) {
-  //       window.alert(response.message);
-  //     }
-  //   }
-  // };
-
   const onDeleteAlarm = async () => {
     if (deleteList.length === 0) {
       alert('삭제할 알림을 선택해주세요.');
@@ -136,7 +125,10 @@ const Alarm = () => {
       targetId: targetId,
       commentId: commentId,
     };
+    // console.log(formData);
     const response = await handlePostCommentAlarm(formData);
+
+
     if (response.success) {
       const targetData = response.data;
       dispatch(setTargetId(targetData.targetId));
@@ -242,12 +234,6 @@ const Alarm = () => {
       </header>
       <main className="px-[3%] h-[calc(90%-52px)] w-full pb-5">
         <section className="w-full h-6 my-4 flex justify-end px-4 items-center">
-          {/* <button
-            className="h-6 w-14 text-xs font-bold"
-            onClick={() => onReadAlarm()}
-          >
-            모두 읽음
-          </button> */}
           <div className="flex items-center gap-1">
             {isEdit ? (
               <>

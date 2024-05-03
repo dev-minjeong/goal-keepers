@@ -42,7 +42,7 @@ const InquiryModal: React.FC<{
   };
   return (
     <div
-      className="fixed top-0 w-screen h-screen bg-black bg-opacity-70 flex items-center justify-center"
+      className="absolute top-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center"
       onClick={(e) => handleOutsideClick(e)}
     >
       <main

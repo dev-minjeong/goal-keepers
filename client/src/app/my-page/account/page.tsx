@@ -175,7 +175,7 @@ const Account = () => {
                         setIsCheckingDuplicate(false);
                       }
                     }}
-                    placeholder="변경할 닉네임 입력 (15자 이하)"
+                    placeholder="변경할 닉네임 입력 (3~15자)"
                     maxLength={15}
                   ></input>
                   <button
