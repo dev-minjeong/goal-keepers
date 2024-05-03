@@ -46,8 +46,8 @@ export const handleVerifyEmail = async (formData: { email: string }) => {
 
     return response.data;
   } catch (error: any) {
-    console.error(error.response.data);
-    return error.response.data;
+    console.error(error.response);
+    return error.response;
   }
 };
 export const handleVerifyEmailCode = async (formData: {

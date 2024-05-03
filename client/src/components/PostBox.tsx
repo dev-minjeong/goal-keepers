@@ -99,6 +99,7 @@ const PostBox: React.FC<{
             </label>
           </li>
           <ShareButton
+            isDetail={false}
             isShare={data.share}
             goalId={data.goalId}
             isPostPage={true}

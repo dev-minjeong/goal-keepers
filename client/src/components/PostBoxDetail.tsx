@@ -54,13 +54,7 @@ const PostBoxDetail: React.FC<{
   index: number;
   setFocusNum: React.Dispatch<React.SetStateAction<number | null>>;
   onCheerPost: (index: number) => void;
-}> = ({
-  data,
-  myNickname,
-  setFocusNum,
-  index,
-  onCheerPost,
-}) => {
+}> = ({ data, myNickname, setFocusNum, index, onCheerPost }) => {
   const [addContent, setAddContent] = useState(false);
   const [contentList, setContentList] = useState<postContentTypes[]>([]);
   const [pageable, setPageable] = useState({
@@ -180,8 +174,8 @@ const PostBoxDetail: React.FC<{
             : data.goalTitle}
         </h3>
         <p className="text-white w-5/6 absolute top-1/3 text-xs mt-2 mx-4">
-          {data.goalDescription.length > 65
-            ? data.goalDescription.slice(0, 65) + '...'
+          {data.goalDescription?.length > 65
+            ? data.goalDescription?.slice(0, 65) + '...'
             : data.goalDescription}
         </p>
         <ul
@@ -194,11 +188,16 @@ const PostBoxDetail: React.FC<{
               onClick={() => onCheerPost(index)}
               className={`${data.cheer ? 'text-orange-400' : 'text-gray-300'}`}
             />
-            <label className={`text-xs 'text-gray-300'`}>
+            <label
+              className={`text-xs font-semibold ${
+                data.cheer ? 'text-orange-400' : 'text-gray-300'
+              }`}
+            >
               {data.postCheerCnt}
             </label>
           </li>
           <ShareButton
+            isDetail={true}
             isShare={data.share}
             goalId={data.goalId}
             isPostPage={true}

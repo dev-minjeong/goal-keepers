@@ -145,7 +145,7 @@ const WritePost = () => {
           }
         }}
       >
-        <button className="w-full h-full">다음</button>
+        <button className="w-full h-full">완료</button>
       </div>
     </>
   );

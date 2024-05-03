@@ -16,11 +16,12 @@ import {
 } from '@/redux/renderSlice';
 
 const ShareButton: React.FC<{
+  isDetail: boolean;
   isShare: boolean;
   goalId: number;
   isPostPage: boolean;
   goalshareCnt: number;
-}> = ({ isShare, goalId, isPostPage, goalshareCnt }) => {
+}> = ({ isDetail, isShare, goalId, isPostPage, goalshareCnt }) => {
   const [isShareNew, setIsShareNew] = useState(isShare);
 
   const reduxShareData = useSelector(selectRender);
@@ -78,7 +79,11 @@ const ShareButton: React.FC<{
           {isPostPage && (
             <label
               className={`text-xs font-semibold ${
-                isShare ? 'text-orange-400' : 'text-gray-500'
+                isShare
+                  ? 'text-orange-400'
+                  : isDetail
+                  ? 'text-gray-300'
+                  : 'text-gray-500'
               }
               `}
             >
