@@ -79,7 +79,7 @@ public class PostContentRepositoryImpl implements PostContentRepositoryCustom {
                     String imageUrl = RepositoryHelper.getImageUrl(goal, firebaseStorageService);
                     boolean isShare = RepositoryHelper.isShareGoal(goal, member, shareRepository);
                     boolean isCheer = RepositoryHelper.isCheerPost(post, member, cheerRepository);
-                    boolean isMyPost = goal.getMember().equals(member);
+                    boolean isMyPost = Objects.isNull(goal.getMember()) ? false : goal.getMember().equals(member);
                     int goalShareCnt = RepositoryHelper.getOriginalGoalShareCnt(goal);
                     Member writer = RepositoryHelper.getWriter(content);
                     PostContentResponseDto contentResponseDto = PostContentResponseDto.of(
@@ -126,7 +126,7 @@ public class PostContentRepositoryImpl implements PostContentRepositoryCustom {
                                                                 RepositoryHelper.isLikeContent(content, member, likeRepository));
                     boolean isCheer = RepositoryHelper.isCheerPost(post, member, cheerRepository);
                     boolean isShare = RepositoryHelper.isShareGoal(goal, member, shareRepository);
-                    boolean isMyPost = goal.getMember().equals(member);
+                    boolean isMyPost = Objects.isNull(goal.getMember()) ? false : goal.getMember().equals(member);
                     int goalShareCnt = RepositoryHelper.getOriginalGoalShareCnt(goal);
                     return PostResponseDto.of(post, writer, isCheer, isMyPost, goal, imageUrl, isShare, goalShareCnt, contentResponseDto);
                 }).collect(Collectors.toList());
@@ -262,7 +262,7 @@ public class PostContentRepositoryImpl implements PostContentRepositoryCustom {
                             .selectFrom(post)
                             .where(post.id.eq(tuple.get(post.id)))
                             .fetchFirst();
-                boolean isMyPost = oneGoal.getMember().equals(member);
+                boolean isMyPost = Objects.isNull(oneGoal.getMember()) ? false : oneGoal.getMember().equals(member);
                 int goalShareCnt = RepositoryHelper.getOriginalGoalShareCnt(oneGoal);
                 return PostResponseDto.of(
                     onePost,
