@@ -6,7 +6,6 @@ import {
   handleDeleteAlarm,
   handleGetAlarm,
   handlePostCommentAlarm,
-  handleReadAlarm,
 } from './actions';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -136,16 +135,6 @@ const Alarm = () => {
     }
   };
 
-  // const onReadAlarm = async () => {
-  //   const confirm = window.confirm('알림을 모두 읽으시겠습니까?');
-  //   if (confirm) {
-  //     const response = await handleReadAlarm();
-  //     if (response.success) {
-  //       window.alert(response.message);
-  //     }
-  //   }
-  // };
-
   const onDeleteAlarm = async () => {
     if (deleteList.length === 0) {
       alert('삭제할 알림을 선택해주세요.');
@@ -176,6 +165,7 @@ const Alarm = () => {
   const onGetAlarmTarget = async (
     targetId: number | null,
     commentId: number | null,
+    notificationId: number,
   ) => {
     const formData = {
       type: 'COMMENT',
@@ -183,6 +173,7 @@ const Alarm = () => {
       commentId: commentId,
     };
     const response = await handlePostCommentAlarm(formData);
+
     if (response.success) {
       const targetData = response.data;
       dispatch(setTargetId(targetData.targetId));
@@ -192,6 +183,21 @@ const Alarm = () => {
 
       dispatch(setStateAlarmTarget(true));
       router.push('/');
+    } else if (response.statusCode === 500) {
+      const confirm = window.confirm(
+        '해당 포스트 또는 댓글이 삭제됐습니다. 이 알림을 삭제하시겠습니까?',
+      );
+      if (confirm) {
+        const formData = {
+          all: false,
+          deleteList: [notificationId],
+        };
+        const response = await handleDeleteAlarm(formData);
+        if (response.success) {
+          window.alert(response.message);
+          return dispatch(setStateAlarm(!reduxAlarmData.alarmBoolean));
+        }
+      }
     }
   };
 
@@ -288,12 +294,6 @@ const Alarm = () => {
       </header>
       <main className="px-[3%] h-[calc(90%-52px)] w-full pb-5">
         <section className="w-full h-6 my-4 flex justify-end px-4 items-center">
-          {/* <button
-            className="h-6 w-14 text-xs font-bold"
-            onClick={() => onReadAlarm()}
-          >
-            모두 읽음
-          </button> */}
           <div className="flex items-center gap-1">
             {isEdit ? (
               <>
@@ -327,6 +327,7 @@ const Alarm = () => {
               alarmContent.map((data, index) => {
                 let menuType;
                 let menuColorType;
+
                 if (
                   data.type === 'TODAY' ||
                   data.type === 'DAYLEFT' ||
@@ -353,7 +354,11 @@ const Alarm = () => {
                         className="h-20 w-full bg-neutral-100 rounded-xl flex items-center px-[5%] py-[3%] gap-2 justify-between"
                         onClick={() => {
                           if (data.type === 'COMMENT') {
-                            onGetAlarmTarget(data.targetId, data.commentId);
+                            onGetAlarmTarget(
+                              data.targetId,
+                              data.commentId,
+                              data.notificationId,
+                            );
                           } else if (data.type === 'NOTIFY') {
                             isFocus === index
                               ? setIsFocus(null)
@@ -446,7 +451,11 @@ const Alarm = () => {
                             className="h-20 bg-neutral-100 rounded-xl flex items-center px-[5%] py-[3%] gap-2 justify-between"
                             onClick={() => {
                               if (data.type === 'COMMENT') {
-                                onGetAlarmTarget(data.targetId, data.commentId);
+                                onGetAlarmTarget(
+                                  data.targetId,
+                                  data.commentId,
+                                  data.notificationId,
+                                );
                               } else if (data.type === 'NOTIFY') {
                                 isFocus === index
                                   ? setIsFocus(null)

@@ -8,7 +8,7 @@ import { faPlusCircle, faPen } from '@fortawesome/free-solid-svg-icons';
 const CreateButton: React.FC<{ isMyGoals: boolean }> = ({ isMyGoals }) => {
   return (
     <div
-      className={`w-14 h-14 rounded-full fixed bottom-20 right-2 flex flex-col items-center justify-center ${
+      className={`w-14 h-14 rounded-full absolute bottom-20 right-2 flex flex-col items-center justify-center ${
         isMyGoals ? 'bg-orange-400' : 'bg-gray-600'
       }`}
     >

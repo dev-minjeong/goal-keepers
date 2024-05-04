@@ -162,6 +162,7 @@ const CommunityBoxDetail: React.FC<{
               </p>
 
               <ShareButton
+                isDetail={true}
                 isShare={data.share}
                 goalId={data.originalGoalId}
                 isPostPage={false}
