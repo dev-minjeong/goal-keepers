@@ -34,7 +34,7 @@ const ShareButton: React.FC<{
       const response = await handleCreateShare(goalId);
 
       if (response.success) {
-        setIsShareNew(!isShareNew);
+        setIsShareNew(true);
         isPostPage
           ? dispatch(setStatePost(!reduxShareData.postBoolean))
           : dispatch(setStateCommunity(!reduxShareData.communityBoolean));
@@ -52,6 +52,7 @@ const ShareButton: React.FC<{
       const response = await handleFindConnectedGoal(goalId);
 
       if (response.success) {
+        setIsShareNew(false);
         const connectedGoalId = response.data.goalId;
 
         const res = await handleDeleteShare(connectedGoalId);
