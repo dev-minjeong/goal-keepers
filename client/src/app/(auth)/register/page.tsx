@@ -60,6 +60,7 @@ const Register = () => {
       const response = await handleVerifyEmail(formData);
 
       if (response.success) {
+        alert(response.message);
         setIsInputEmailCode(true);
       } else {
         resetField('email');

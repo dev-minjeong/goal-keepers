@@ -44,6 +44,16 @@ const CreateGoal = () => {
     },
   });
 
+  const [today, setToday] = useState<{
+    year: number | undefined;
+    month: number | undefined;
+    day: number | undefined;
+  }>({
+    year: undefined,
+    month: undefined,
+    day: undefined,
+  });
+
   const [range, setRange] = useState<DateRange | undefined>();
   const [createGoalItem, setCreateGoalItem] = useState<string | null>('title');
 
@@ -54,6 +64,15 @@ const CreateGoal = () => {
 
   const reduxGoalData = useSelector(selectGoalData);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const nowDate = new Date();
+    setToday({
+      year: nowDate.getFullYear(),
+      month: nowDate.getMonth() + 1,
+      day: nowDate.getDate(),
+    });
+  }, []);
 
   useEffect(() => {
     setCreateGoalItem(item);
@@ -128,17 +147,16 @@ const CreateGoal = () => {
       type: 'application/json',
     });
     formData.append('goalInformation', jsonBlob);
+
     if (imageFile) formData.append('image', imageFile);
 
-    await handlePostGoalData(formData)
-      .then((response) => {
-        if (response?.ok) {
-          alert('목표가 생성되었습니다!');
-          dispatch(setStateGoal(true));
-          router.push(`/`);
-        }
-      })
-      .catch((error) => console.log(error));
+    const response = await handlePostGoalData(formData);
+
+    if (response.ok) {
+      alert('목표가 생성되었습니다!');
+      dispatch(setStateGoal(true));
+      router.push(`/`);
+    }
   };
 
   return (
@@ -180,7 +198,7 @@ const CreateGoal = () => {
               <div className="flex w-[100px] justify-around ">
                 <input
                   type="text"
-                  placeholder="2023"
+                  placeholder={`${today.year}`}
                   className="w-[40%] text-center text-[15px]"
                   value={date.startDate.year || ''}
                   onChange={(e) =>
@@ -196,7 +214,7 @@ const CreateGoal = () => {
                 <span className="text-slate-400	leading-7">-</span>
                 <input
                   type="text"
-                  placeholder="12"
+                  placeholder={`${today.month}`}
                   className="w-[20%] text-center text-[15px]"
                   value={date.startDate.month || ''}
                   onChange={(e) =>
@@ -212,7 +230,7 @@ const CreateGoal = () => {
                 <span className="text-slate-400	leading-7">-</span>
                 <input
                   type="text"
-                  placeholder="23"
+                  placeholder={`${today.day}`}
                   className="w-[20%] text-center text-[15px]"
                   value={date.startDate.day || ''}
                   onChange={(e) =>
@@ -230,7 +248,7 @@ const CreateGoal = () => {
               <div className="flex w-[100px] justify-around">
                 <input
                   type="text"
-                  placeholder="2023"
+                  placeholder={`${today.year}`}
                   className="w-[40%] text-center text-[15px]"
                   value={date.endDate.year || ''}
                   onChange={(e) =>
@@ -246,7 +264,7 @@ const CreateGoal = () => {
                 <span className="text-slate-400	leading-7">-</span>
                 <input
                   type="text"
-                  placeholder="12"
+                  placeholder={`${today.month}`}
                   className="w-[20%] text-center text-[15px]"
                   value={date.endDate.month || ''}
                   onChange={(e) =>
@@ -262,7 +280,7 @@ const CreateGoal = () => {
                 <span className="text-slate-400	leading-7">-</span>
                 <input
                   type="text"
-                  placeholder="23"
+                  placeholder={`${today.day}`}
                   className="w-[20%] text-center text-[15px]"
                   value={date.endDate.day || ''}
                   onChange={(e) =>
