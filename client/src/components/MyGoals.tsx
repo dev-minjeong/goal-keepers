@@ -166,7 +166,7 @@ const MyGoals: React.FC<{
   const handleCheckLastPage = () => {
     const pageNumber = pageable.pageNumber + 1;
     if (pageable.last) {
-      console.log('마지막 페이지 입니다.');
+      // console.log('마지막 페이지 입니다.');
     } else {
       handleFetchGoalListAll(pageNumber);
     }
