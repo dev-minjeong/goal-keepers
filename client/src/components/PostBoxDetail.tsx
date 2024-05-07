@@ -1,6 +1,12 @@
 'use client';
 import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import Image1 from '../../public/assets/images/goalKeepers.png';
 import {
   handleChangePrivate,
@@ -56,13 +62,15 @@ const PostBoxDetail: React.FC<{
   onCheerPost: (index: number) => void;
 }> = ({ data, myNickname, setFocusNum, index, onCheerPost }) => {
   const [addContent, setAddContent] = useState(false);
-  const [contentList, setContentList] = useState<postContentTypes[]>([]);
+  const [contentList, setContentList] = useState<
+    { date: string; contents: any }[]
+  >([]);
   const [pageable, setPageable] = useState({
     pageNumber: 1,
     last: false,
   });
   const [more, setMore] = useState<boolean>(false);
-  const [focusContent, setFocusContent] = useState<null | number>(null);
+  const [focusContent, setFocusContent] = useState<number[]>([]);
   const [contentValue, setContentValue] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
 
@@ -72,7 +80,7 @@ const PostBoxDetail: React.FC<{
   const dispatch = useDispatch();
 
   useEffect(() => {
-    onGetAllPostContent(pageable.pageNumber);
+    onGetAllPostContent(1);
     setIsPrivate(data.privated);
   }, [reduxPostData.contentBoolean]);
 
@@ -85,13 +93,41 @@ const PostBoxDetail: React.FC<{
     const response = await handleGetAllPostContent(formData);
 
     if (response.success) {
+      const groupedItems = response.data.content.reduce(
+        (acc: any, curr: any) => {
+          const timestamp = curr.createdAt.slice(0, 10);
+          acc[timestamp] = acc[timestamp] || [];
+          acc[timestamp].push(curr);
+          return acc;
+        },
+        {},
+      );
+
+      const groupedByDateArray = Object.entries(groupedItems).map(
+        ([date, contents]) => ({
+          date,
+          contents,
+        }),
+      );
+
+      groupedByDateArray.sort((a: any, b: any) => b.date - a.date);
+
       if (more) {
-        setContentList((prevPostData) => [
-          ...prevPostData,
-          ...response.data.content,
-        ]);
+        const concatData = contentList;
+        groupedByDateArray.forEach((obj2: any) => {
+          const existingObj = concatData.find(
+            (obj1) => obj1.date === obj2.date,
+          );
+          if (existingObj) {
+            existingObj.contents.push(...obj2.contents);
+          } else {
+            concatData.push(obj2);
+          }
+        });
+
+        setContentList(concatData);
       } else {
-        setContentList(response.data.content);
+        setContentList(groupedByDateArray);
       }
       setPageable({
         pageNumber: response.data.pageable.pageNumber + 1,
@@ -111,6 +147,7 @@ const PostBoxDetail: React.FC<{
 
     if (response.success) {
       setAddContent(false);
+      setMore(false);
       dispatch(setStateContent(!reduxPostData.contentBoolean));
     }
   };
@@ -145,6 +182,47 @@ const PostBoxDetail: React.FC<{
     }
   };
 
+  useEffect(() => {
+    if (more) {
+      handleCheckLastPage();
+    }
+  }, [more]);
+
+  useLayoutEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.addEventListener('scroll', handleScroll);
+      return () =>
+        contentRef.current.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    if (contentRef.current) {
+      const elements = contentRef.current.querySelectorAll('.content-element');
+
+      if (elements.length > 0) {
+        const lastElement = elements[elements.length - 1];
+
+        const lastComment = lastElement.getBoundingClientRect().bottom;
+        const parentComment =
+          lastElement.parentElement.getBoundingClientRect().bottom;
+
+        if (lastComment - parentComment < 2) {
+          setMore(true);
+        }
+      }
+    }
+  }, []);
+
+  const handleCheckLastPage = () => {
+    const pageNumber = pageable.pageNumber + 1;
+    if (pageable.last) {
+      // console.log('마지막 페이지 입니다.');
+    } else {
+      onGetAllPostContent(pageNumber);
+    }
+  };
+
   return (
     <article
       className="h-[450px] flex flex-col p-3 mb-4 border rounded-md duration-100	
@@ -168,11 +246,16 @@ const PostBoxDetail: React.FC<{
           }}
         ></Image>
         <div className="w-full h-full bg-black absolute opacity-50"></div>
-        <h3 className="text-center px-1  mx-4	text-white	font-bold absolute top-1/4 -translate-y-1/3 z-10 text-ellipsis	">
-          {data.goalTitle.length > 18
-            ? data.goalTitle.slice(0, 18) + '...'
-            : data.goalTitle}
-        </h3>
+        <div className="absolute flex justify-between top-1/4 px-4 -translate-y-1/3   w-full">
+          <h3 className="text-center text-white	font-bold   z-10 text-ellipsis	">
+            {data.goalTitle.length > 18
+              ? data.goalTitle.slice(0, 18) + '...'
+              : data.goalTitle}
+          </h3>
+          <span className="z-10 bg-orange-300 text-white text-[11px] px-1 h-[18px] ">
+            {data.nickname}
+          </span>
+        </div>
         <p className="text-white w-5/6 absolute top-1/3 text-xs mt-2 mx-4">
           {data.goalDescription?.length > 65
             ? data.goalDescription?.slice(0, 65) + '...'
@@ -229,61 +312,91 @@ const PostBoxDetail: React.FC<{
           </button>
         </section>
       ) : (
-        <div className="h-7"></div>
+        <div className="h-4"></div>
       )}
 
-      <div className="w-full	mt-1 flex flex-col flex-1">
-        <ul className="flex-1 overflow-y-auto w-full p-2 pb-4" ref={contentRef}>
+      <div className="w-full	mt-1 flex flex-col flex-1 ">
+        <ul
+          className="flex-1 overflow-y-auto w-full p-2 pb-4 "
+          ref={contentRef}
+        >
           {addContent && (
-            <li className="w-full h-9 flex gap-2 items-center">
-              <input
-                className="w-11/12 text-sm border-b p-1 text-gray-600"
-                type="text"
-                autoFocus
-                placeholder="목표의 현재 진행 상황을 기록하세요!"
-                onChange={(e) => setContentValue(e.target.value)}
-              ></input>
-              <button className="w-6 h-6" onClick={() => setAddContent(false)}>
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  className="w-full text-gray-600 h-full"
-                />
-              </button>
-            </li>
-          )}
-          {contentList.map((list, index) => {
-            return (
-              <li
-                key={index}
-                onMouseEnter={() => setFocusContent(index)}
-                onMouseLeave={() => setFocusContent(null)}
-                className={`text-gray-600 font-semibold	 text-sm ${
-                  focusContent === index ? 'bg-orange-200' : 'bg-orange-100'
-                } mt-1 mb-1 py-1 rounded-md px-2 drop-shadow-md flex justify-between`}
-              >
-                <span>{list.content}</span>
-                <button>
-                  {focusContent === index ? (
-                    data.myPost ? (
-                      <FontAwesomeIcon
-                        onClick={() => onDeleteContent(list.contentId)}
-                        className={`text-white`}
-                        icon={faTrashAlt}
-                      />
-                    ) : (
-                      <FontAwesomeIcon
-                        icon={faHeart}
-                        className={` ${
-                          list.like ? 'text-orange-600' : 'text-white'
-                        }`}
-                        onClick={() => onLikeContent(list.contentId)}
-                      />
-                    )
-                  ) : (
-                    <></>
-                  )}
+            <div className="w-full flex flex-col mb-2">
+              <li className="w-full h-9 flex gap-2 items-center">
+                <input
+                  className="w-11/12 text-sm border-b p-1 text-gray-600"
+                  type="text"
+                  autoFocus
+                  maxLength={60}
+                  placeholder="목표의 현재 진행 상황을 기록하세요!"
+                  onChange={(e) => setContentValue(e.target.value)}
+                ></input>
+                <button
+                  className="w-6 h-6"
+                  onClick={() => {
+                    setContentValue('');
+                    setAddContent(false);
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    className="w-full text-gray-600 h-full"
+                  />
                 </button>
               </li>
+              {contentValue.length >= 60 && (
+                <span className="text-xs text-orange-500">
+                  * 60자 이내로 작성해주세요.
+                </span>
+              )}
+            </div>
+          )}
+          {contentList.map((group, index) => {
+            return (
+              <ul key={index} className="mb-4 content-element">
+                <h3 className="text-xs text-gray-500 mb-1">
+                  {group.date.replace(/-/g, '/')}
+                </h3>
+                {group.contents.map((list: any, i: number) => {
+                  return (
+                    <li
+                      key={i}
+                      onMouseEnter={() => setFocusContent([index, i])}
+                      onMouseLeave={() => setFocusContent([])}
+                      className={`text-gray-600 font-semibold	flex items-center text-sm ${
+                        focusContent[0] === index && focusContent[1] === i
+                          ? 'bg-orange-200'
+                          : 'bg-orange-100'
+                      } mt-1 mb-1 py-1 rounded-md px-2 drop-shadow-md flex justify-between`}
+                    >
+                      <span className="w-[calc(100%-18px)]">
+                        {list.content}
+                      </span>
+                      <button className="w-4">
+                        {focusContent[0] === index && focusContent[1] === i ? (
+                          data.myPost ? (
+                            <FontAwesomeIcon
+                              onClick={() => onDeleteContent(list.contentId)}
+                              className={`text-white`}
+                              icon={faTrashAlt}
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faHeart}
+                              className={` ${
+                                list.like ? 'text-orange-600' : 'text-white'
+                              }`}
+                              onClick={() => onLikeContent(list.contentId)}
+                            />
+                          )
+                        ) : (
+                          <></>
+                        )}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             );
           })}
         </ul>

@@ -161,7 +161,7 @@ const CreateGoal = () => {
 
   return (
     <>
-      <section className="h-96	w-full flex flex-col	items-center gap-5">
+      <section className="h-[400px]	w-full flex flex-col	items-center gap-5">
         {item === 'title' ? (
           <>
             <h1 className="gk-primary-h1">목표의 이름을 설정하세요*</h1>

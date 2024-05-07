@@ -4,10 +4,7 @@ import Image from 'next/image';
 import React, { useRef } from 'react';
 import Image1 from '../../public/assets/images/goalKeepers.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faHeart,
-  faPlus,
-} from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faPlus } from '@fortawesome/free-solid-svg-icons';
 import ShareButton from './ShareButton';
 
 interface postContentTypes {
@@ -70,7 +67,7 @@ const PostBox: React.FC<{
       mx-auto
        "
     >
-      <div className="w-1/2 h-full relative px-2 z-0 flex flex-col	justify-between items-center">
+      <div className="w-1/2 h-full relative px-2 z-0 flex flex-col justify-between items-center">
         <div className="w-full h-3/4 relative">
           <Image
             src={data.goalImageUrl === null ? Image1 : data.goalImageUrl}
@@ -81,6 +78,9 @@ const PostBox: React.FC<{
               zIndex: 1,
             }}
           ></Image>
+          <span className="z-10 bg-orange-300 text-white text-[11px] absolute px-1 m-2">
+            {data.nickname}
+          </span>
         </div>
 
         <ul ref={likeRef} className="flex w-full justify-center	gap-2">
