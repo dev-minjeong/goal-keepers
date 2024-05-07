@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { setStateGoal } from '@/redux/renderSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { setDescription } from '@/redux/goalDataSlice';
 
 interface selectDataTypes {
   imageUrl: any;
@@ -35,15 +36,17 @@ const GoalModal: React.FC<{
   goalDoing: string;
 }> = ({ setOpen, selectData, setSelectGoalNum, goalDoing }) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [editDescription, setEditDescription] = useState(
-    selectData?.description,
-  );
+  const [editDescription, setEditDescription] = useState('');
   const [editStartDate, setEditStartDate] = useState(selectData?.startDate);
   const [editEndDate, setEditEndDate] = useState(selectData?.endDate);
   const containerRef = useRef<HTMLElement>(null);
   const [imageFile, setImageFile] = useState<File | null>(selectData?.imageUrl);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (selectData) setEditDescription(selectData.description);
+  }, [selectData]);
 
   const handleOutsideClick = (e: any) => {
     if (!containerRef.current?.contains(e.target)) {
@@ -96,7 +99,6 @@ const GoalModal: React.FC<{
     }
   };
 
-  useEffect(() => {}, []);
   const handleConfirmButton = () => {
     if (isEdit) {
       const confirm = window.confirm('수정을 완료하시겠습니까?');
@@ -131,6 +133,7 @@ const GoalModal: React.FC<{
       }
     }
   };
+
   return (
     <div
       className="absolute top-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center"
@@ -185,7 +188,7 @@ const GoalModal: React.FC<{
           </button>
           <div className="w-full h-2/3">
             <textarea
-              className="h-full"
+              className="h-full w-full"
               value={editDescription}
               onChange={(e) => setEditDescription(e.target.value)}
               readOnly={isEdit ? false : true}
@@ -221,7 +224,10 @@ const GoalModal: React.FC<{
           {isEdit && (
             <button
               className="w-1/4 bg-slate-100 rounded-lg h-1/3 text-current"
-              onClick={() => setIsEdit(false)}
+              onClick={() => {
+                setIsEdit(false);
+                selectData && setEditDescription(selectData.description);
+              }}
             >
               취소
             </button>
