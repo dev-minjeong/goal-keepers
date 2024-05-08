@@ -35,7 +35,7 @@ public class WebSecuritConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/auth/**", "/api/kakao/login", "/public/**", "/subscribe").permitAll()
+                .requestMatchers("/auth/**", "/api/kakao/login", "/public/**", "/subscribe", "/").permitAll()
                 .requestMatchers("/admin/**", "/management/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
             )
