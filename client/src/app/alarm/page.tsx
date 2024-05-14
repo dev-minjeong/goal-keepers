@@ -332,7 +332,7 @@ const Alarm = () => {
                           </div>
                         </div>
 
-                        <div className="flex-1 h-full flex flex-col">
+                        <div className="flex-1 h-full flex flex-col justify-center">
                           {/* {data.giverNickname !== null ? (
                             <div className="w-full flex justify-end">
                               <div className=" px-1 py-[1px] bg-orange-200">
@@ -429,7 +429,7 @@ const Alarm = () => {
                               </div>
                             </div>
 
-                            <div className="flex-1 h-full flex flex-col">
+                            <div className="flex-1 h-full flex flex-col justify-center">
                               {/* {data.giverNickname !== null ? (
                                 <div className="w-full flex justify-end">
                                   <div className=" px-1 py-[1px] bg-orange-200">
