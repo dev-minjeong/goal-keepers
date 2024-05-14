@@ -1,7 +1,12 @@
 'use client';
 import { handleCreateInquiry } from '@/app/my-page/cs/actions';
 import { setStateInquiry } from '@/redux/renderSlice';
-import React, { SetStateAction, useRef } from 'react';
+import React, {
+  SetStateAction,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from 'react';
 import { useDispatch } from 'react-redux';
 
 const InquiryModal: React.FC<{
@@ -40,10 +45,34 @@ const InquiryModal: React.FC<{
       dispatch(setStateInquiry(true));
     }
   };
+  const modalContainer = useRef<any>();
+
+  useEffect(() => {
+    window.addEventListener('resize', function () {
+      if (document.activeElement?.tagName === 'INPUT') {
+        if (modalContainer !== null) {
+          modalContainer.current.style.top = '50%';
+          modalContainer.current.style.transform = 'translateY(-50%)';
+        }
+      }
+    });
+  }, []);
+
+  useLayoutEffect(() => {
+    const detectMobileKeyboard = () => {
+      if (document.activeElement?.tagName == 'INPUT') {
+        modalContainer.current.scrollIntoView({ block: 'end' });
+      }
+    };
+    window.addEventListener('resize', detectMobileKeyboard);
+    return () => window.removeEventListener('resize', detectMobileKeyboard);
+  }, []);
+
   return (
     <div
       className="absolute top-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center"
       onClick={(e) => handleOutsideClick(e)}
+      ref={modalContainer}
     >
       <main
         className="w-3/4 h-56 bg-white opacity-100 px-5 py-7 flex flex-col justify-between gap-2"
