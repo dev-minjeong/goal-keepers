@@ -149,9 +149,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
                 {pathname === '/' && (
                   <header className="w-full flex flex-col items-end mr-5 mb-6">
                     <Link href={'/alarm'}>
-                      <div
-                        className="flex mr-2"
-                      >
+                      <div className="flex mr-2">
                         <FontAwesomeIcon
                           icon={faBell}
                           className="w-5 h-5 text-gray-500"
