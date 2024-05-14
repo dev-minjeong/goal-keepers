@@ -188,7 +188,7 @@ const GoalModal: React.FC<{
           </button>
           <div className="w-full h-2/3">
             <textarea
-              className="h-full w-full"
+              className="h-full w-full text-sm"
               value={editDescription}
               onChange={(e) => setEditDescription(e.target.value)}
               readOnly={isEdit ? false : true}
