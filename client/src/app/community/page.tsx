@@ -45,7 +45,6 @@ interface communityContentTypes {
 }
 
 const Community = (props: any) => {
-const Community = (props: any) => {
   const [focusNum, setFocusNum] = useState<number | null>(null);
   const [communityData, setCommunityData] = useState<communityContentTypes[]>(
     [],
