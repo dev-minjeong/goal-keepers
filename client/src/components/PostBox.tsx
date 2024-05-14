@@ -41,7 +41,6 @@ const PostBox: React.FC<{
 }> = ({ data, index, focusNum, setFocusNum, onCheerPost }) => {
   const likeRef = useRef<HTMLUListElement>(null);
 
-
   const handleFocus = (e: { target: any }) => {
     if (!likeRef.current?.contains(e.target)) {
       if (focusNum === index) {
@@ -55,7 +54,7 @@ const PostBox: React.FC<{
   return (
     <article
       onClick={(e) => handleFocus(e)}
-      className={`h-44
+      className="h-44
       flex
       justify-between
       p-3
@@ -66,7 +65,7 @@ const PostBox: React.FC<{
       w-11/12
       inset-x-0
       mx-auto
-       "
+      "
     >
       <div className="w-1/2 h-full relative px-2 z-0 flex flex-col justify-between items-center">
         <div className="w-full h-3/4 relative">
