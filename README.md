@@ -4,7 +4,7 @@
 ![골키퍼스](https://github.com/gem7878/goal-keepers/assets/100185951/bc536abf-7e7f-4c71-b638-3051cbab6c52)
 
 
-- URL: https://github.com/gem7878/goal-keepers
+- URL: https://goalkeepers.vercel.app
 - Test ID: test2@gogo.com
 - Test PW: passwordPassword2@
 
